@@ -78,7 +78,7 @@ character(len=8)   :: date_start, date_end
 character(len=10)  :: time_start, time_end
 character(len=5)   :: zone
 ! Paths
-character(len=512) :: earth_path,phys_path
+character(len=512) :: earth_path,phys_path,kernels_to_load,thalassa_direct
 
 ! ==============================================================================
 
@@ -89,8 +89,10 @@ character(len=512) :: earth_path,phys_path
 command_arguments = COMMAND_ARGUMENT_COUNT()
 input_path  = './in/input.txt'
 object_path = './in/object.txt'
-earth_path = './data/earth_potential/GRIM5-S1.txt'
-phys_path = './data/physical_constants.txt'
+thalassa_direct = '/Users/woodywu/Desktop/Research/Software/thalassa_git'
+earth_path = TRIM(thalassa_direct)//'/data/earth_potential/GRIM5-S1.txt'
+phys_path = TRIM(thalassa_direct)//'/data/physical_constants.txt'
+kernels_to_load = TRIM(thalassa_direct)//'/data/kernels_to_load.furnsh'
 if (command_arguments > 0) call GET_COMMAND_ARGUMENT(1,input_path)
 if (command_arguments > 1) call GET_COMMAND_ARGUMENT(2,object_path)
 if (command_arguments > 2) call GET_COMMAND_ARGUMENT(3,earth_path)
@@ -137,8 +139,8 @@ write(id_log,'(a)') 'Location of initial conditions file: '//trim(object_path)
 
 ! Load SPICE kernels - this is only necessary if we are using SPICE in this run.
 if (iephem == 1) then
-  call FURNSH('./data/kernels_to_load.furnsh')
-  write(id_log,'(a)') 'SPICE kernels loaded through '//'./data/kernels_to_load.furnsh'
+  call FURNSH(kernels_to_load)
+  write(id_log,'(a)') 'SPICE kernels loaded through '//kernels_to_load
 
 end if
 
